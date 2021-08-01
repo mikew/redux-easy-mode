@@ -21,7 +21,7 @@ test: prepare-when-local
 ifeq ($(CI),true)
 	npx jest --ci
 else
-	npx jest --watch
+	npx --node-arg --inspect=9241 jest --watch
 endif
 
 deploy:

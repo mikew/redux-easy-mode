@@ -1,6 +1,13 @@
 # redux-easy-mode
 
-TypeScript helpers for idiomatic Redux.
+A very easy to understand and use set of tools for Redux. Includes:
+
+- Easy way of defining actions
+- Easy way of building reducers
+- Async / Promise based actions
+- Action-based side effects
+- Selector-based side effects
+- TypeScript support
 
 ## Actions and Reducers
 
@@ -34,7 +41,7 @@ export default createActions('example', {
   }),
 
   // An async action. See below for notes on the async middleware.
-  asyncAction: async (dispatch, getState) => ({
+  asyncAction: () => async (dispatch, getState) => ({
     foo: 42,
   }),
 })

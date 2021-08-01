@@ -1,0 +1,31 @@
+name: CI
+on: push
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Cache node modules
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.npm
+            **/node_modules
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/package-lock.json') }}
+
+      # https://github.community/t/github-actions-bot-email-address/17204/5
+      - name: Prep for git push
+        run: |
+          git config --local user.name "github-actions[bot]"
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Prep NPM
+        run: npm config set '//registry.npmjs.org/:_authToken' "${{secrets.NPM_TOKEN}}"
+
+      - run: make prepare-env
+      - run: make test
+      - run: make build
+      - run: make deploy

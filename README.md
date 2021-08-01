@@ -21,6 +21,8 @@ what will be the action's payload (or, if you'd prefer, you can return both a
 payload and meta.)
 
 ```typescript
+import { createActions } from 'redux-easy-mode'
+
 export default createActions('example', {
   // A simple action with no arguments or payload
   increment: () => undefined,
@@ -54,6 +56,8 @@ export default createActions('example', {
 It uses a builder pattern, so return types are inferred for you.
 
 ```typescript
+import { createReducer } from 'redux-easy-mode'
+
 import actions from './actions'
 
 const initialState = {
@@ -132,7 +136,7 @@ This will dispatch 3 actions, in this order:
 
 ```typescript
 import { applyMiddleware, createStore } from 'redux'
-import asyncMiddleware from 'redux-easy-mode/async/asyncMiddleware'
+import { asyncMiddleware } from 'redux-easy-mode'
 
 const configureStore = applyMiddleware(asyncMiddleware())(createStore)
 ```
@@ -248,7 +252,7 @@ of the state changes based on a selector.
 
 ```typescript
 import { applyMiddleware, createStore } from 'redux'
-import sideEffectMiddleware from 'redux-easy-mode/sideEffects/sideEffectMiddleware'
+import { sideEffectMiddleware } from 'redux-easy-mode'
 
 const configureStore = applyMiddleware(sideEffectMiddleware())(createStore)
 ```
@@ -260,6 +264,8 @@ given access to the store, and can optionally return a function to do some
 cleanup.
 
 ```ts
+import { reduxActionSideEffect } from 'redux-easy-mode'
+
 reduxActionSideEffect(actions.increment, ({ action, dispatch, getState }) => {
   console.log(`${actions.increment.actionConstant} was dispatched`)
 
@@ -278,6 +284,8 @@ changed. You are given access to the store, and can optionally return a function
 to do some cleanup.
 
 ```ts
+import { reduxSelectorSideEffect } from 'redux-easy-mode'
+
 reduxSelectorSideEffect(
   (state: RootState) => state.some.value,
   ({ value, previousValue, dispatch, getState }) => {

@@ -36,6 +36,8 @@
     "lib/createReducer.js",
     "lib/createReducer.test.d.ts",
     "lib/createReducer.test.js",
+    "lib/index.d.ts",
+    "lib/index.js",
     "lib/isReduxActionCreator.d.ts",
     "lib/isReduxActionCreator.js",
     "lib/sideEffects/reduxActionSideEffect.d.ts",
@@ -47,14 +49,6 @@
     "lib/sideEffects/reduxSelectorSideEffect.test.d.ts",
     "lib/sideEffects/reduxSelectorSideEffect.test.js",
     "lib/sideEffects/sideEffectMiddleware.d.ts",
-    "lib/sideEffects/sideEffectMiddleware.js",
-    "lib/test/helpers/setup.d.ts",
-    "lib/test/helpers/setup.js",
-    "lib/test/testActions.d.ts",
-    "lib/test/testActions.js",
-    "lib/test/testReducer.d.ts",
-    "lib/test/testReducer.js",
-    "lib/test/testStore.d.ts",
-    "lib/test/testStore.js"
+    "lib/sideEffects/sideEffectMiddleware.js"
   ]
 }

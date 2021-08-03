@@ -21,7 +21,7 @@ export interface ReduxActionCreator<
   (...args: Parameters<PayloadCreator>): {
     type: `${Namespace}/${ActionType}`
   } & PayloadAndMeta<PayloadCreator>
-  actionConstant: `${Namespace}/${ActionType}`
+  actionType: `${Namespace}/${ActionType}`
 }
 
 type PayloadAndMeta<
@@ -70,7 +70,7 @@ function createActions<
       // attributes in one go.
     }) as any
 
-    actionCreators[key].actionConstant = `${namespace}/${key}`
+    actionCreators[key].actionType = `${namespace}/${key}`
   }
 
   return actionCreators

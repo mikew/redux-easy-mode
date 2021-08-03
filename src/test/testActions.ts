@@ -8,7 +8,7 @@ const testActions = createActions('test', {
     payload: { arg1, arg2 },
     meta: { arg1: `meta ${arg1}`, arg2: `meta ${arg2}` },
   }),
-  overriddenActionConstant: () => ({
+  overriddenActionType: () => ({
     type: 'totally overridden',
     payload: '',
   }),

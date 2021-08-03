@@ -14,7 +14,7 @@ A very easy to understand and use set of tools for Redux. Includes:
 ### Actions
 
 Actions are built using a namespace and an object of "payload creators". The
-property names are considered the action constants.
+property names are considered the action types.
 
 A payload creator is a function that takes any number of arguments and returns
 what will be the action's payload (or, if you'd prefer, you can return both a
@@ -30,10 +30,9 @@ export default createActions('example', {
   // An action with an argument that also returns a payload.
   setIncrementBy: (n: number) => n,
 
-  // An action that returns meta, payload, and even overrides the action
-  // constant.
-  // Note that when you override the action constant, the `.actionConstant`
-  // property will be inconsistent.
+  // An action that returns meta, payload, and even overrides the action type.
+  // Note that when you override the action type, the `.actionType` property
+  // will be inconsistent.
   safeSetIncrementBy: (n: number) => ({
     type: 'example/setIncrementBy',
     payload: n > 10 ? 10 : n,
@@ -267,7 +266,7 @@ cleanup.
 import { reduxActionSideEffect } from 'redux-easy-mode'
 
 reduxActionSideEffect(actions.increment, ({ action, dispatch, getState }) => {
-  console.log(`${actions.increment.actionConstant} was dispatched`)
+  console.log(`${actions.increment.actionType} was dispatched`)
 
   // Return a function if you'd like to do some cleanup before this function is
   // called again.

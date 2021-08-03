@@ -19,7 +19,7 @@ describe('reduxSelectorSideEffect', () => {
 
     reduxSelectorSideEffect(
       (state: State) => state.foo,
-      ({ value, previousValue, getState, dispatch }) => {
+      (value, previousValue, dispatch, getState) => {
         valueTest(value)
         previousValueTest(previousValue)
         getState()
@@ -53,7 +53,7 @@ describe('reduxSelectorSideEffect', () => {
 
     reduxSelectorSideEffect(
       (state: State) => state.foo,
-      ({ value, previousValue, getState, dispatch }) => {
+      (value, previousValue, dispatch, getState) => {
         valueTest(value)
         previousValueTest(previousValue)
         getState()

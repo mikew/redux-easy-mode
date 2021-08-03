@@ -12,7 +12,7 @@ describe('reduxActionSideEffect', () => {
 
     reduxActionSideEffect(
       testActions.simplePayload,
-      ({ action, getState, dispatch }) => {
+      (action, dispatch, getState) => {
         actionPayload = action.payload
         getState()
         dispatch({ type: '' })

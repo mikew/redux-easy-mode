@@ -4,7 +4,7 @@ import { Action, Dispatch, MiddlewareAPI } from 'redux'
 import isReduxActionCreator from '../isReduxActionCreator'
 
 interface ReduxActionSideEffectHandler<Action> {
-  (config: { action: Action; dispatch: Dispatch; getState: () => any }): void
+  (action: Action, dispatch: Dispatch, getState: () => any): void
 }
 
 interface ReduxActionSideEffect {
@@ -51,31 +51,20 @@ export async function runActionSideEffects(
   store: MiddlewareAPI,
 ) {
   if (actionSideEffects[action.type]) {
-    for (const wut of actionSideEffects[action.type]) {
+    for (const sideEffect of actionSideEffects[action.type]) {
       try {
-        wut.cleanup?.()
+        sideEffect.cleanup?.()
       } catch (err) {
         console.error(err)
       }
 
-      const maybeCleanupFunction = wut.handler({
+      const maybeCleanupFunction = sideEffect.handler(
         action,
-        dispatch: store.dispatch,
-        getState: store.getState,
-      })
+        store.dispatch,
+        store.getState,
+      )
 
-      wut.cleanup = maybeCleanupFunction
+      sideEffect.cleanup = maybeCleanupFunction
     }
   }
 }
-
-// const actions = createActions('sideEffects', {
-//   test: () => ({ foo: 'bar' }),
-// })
-
-// reduxActionSideEffect(
-//   actions.test.actionConstant,
-//   (action: ReturnType<typeof actions.test>, dispatch, getState) => {},
-// )
-
-// reduxActionSideEffect(actions.test, (action, dispatch, getState) => {})

@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.2.1 (2021-08-03)
+
+
+### Bug Fixes
+
+* Use const strings in async action type helpers ([#3](https://github.com/mikew/redux-easy-mode/issues/3)) ([4125bbd](https://github.com/mikew/redux-easy-mode/commit/4125bbd5fca5b011236622d421a7d3922137f00b))
+
 ## 1.2.0 (2021-08-03)
 
 

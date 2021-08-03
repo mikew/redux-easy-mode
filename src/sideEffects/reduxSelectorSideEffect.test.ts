@@ -1,6 +1,5 @@
 import reduxSelectorSideEffect, {
   runSelectorSideEffects,
-  UNSET_PREVIOUS_VALUE,
 } from './reduxSelectorSideEffect'
 
 interface State {
@@ -12,7 +11,7 @@ function createState(state: State) {
 }
 
 describe('reduxSelectorSideEffect', () => {
-  it('is called when the given type is dispatched', () => {
+  it('is called when the result of the selector changes', () => {
     const dispatch = jest.fn()
     const valueTest = jest.fn()
     const previousValueTest = jest.fn()
@@ -34,7 +33,7 @@ describe('reduxSelectorSideEffect', () => {
 
     expect(dispatch).toHaveBeenCalled()
     expect(valueTest).toHaveBeenLastCalledWith('bar')
-    expect(previousValueTest).toHaveBeenLastCalledWith(UNSET_PREVIOUS_VALUE)
+    expect(previousValueTest).toHaveBeenLastCalledWith(undefined)
 
     runSelectorSideEffects({
       dispatch,
@@ -70,7 +69,7 @@ describe('reduxSelectorSideEffect', () => {
 
     expect(dispatch).toHaveBeenCalled()
     expect(valueTest).toHaveBeenLastCalledWith('bar')
-    expect(previousValueTest).toHaveBeenLastCalledWith(UNSET_PREVIOUS_VALUE)
+    expect(previousValueTest).toHaveBeenLastCalledWith(undefined)
     expect(cleanup).not.toHaveBeenCalled()
 
     runSelectorSideEffects({

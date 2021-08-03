@@ -13,8 +13,6 @@ interface Comparator<T> {
   (a: T, b: T): boolean
 }
 
-export const UNSET_PREVIOUS_VALUE = Symbol()
-
 const selectorSideEffects: {
   handler: ReduxSelectorSideEffectHandler<any>
   previousValue: any
@@ -34,7 +32,7 @@ function reduxSelectorSideEffect<
   selectorSideEffects.push({
     handler,
     selector,
-    previousValue: UNSET_PREVIOUS_VALUE,
+    previousValue: undefined,
     compare: comparator ? comparator : (a, b) => a === b,
   })
 }

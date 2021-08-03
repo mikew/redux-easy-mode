@@ -110,16 +110,16 @@ function asyncMiddleware(options?: MiddlewareOptions): Middleware {
 
 export default asyncMiddleware
 
-export function startActionType(type: string) {
-  return `${type}/start`
+export function startActionType<T extends string>(type: T) {
+  return `${type}/start` as const
 }
 
-export function successActionType(type: string) {
-  return `${type}/success`
+export function successActionType<T extends string>(type: T) {
+  return `${type}/success` as const
 }
 
-export function errorActionType(type: string) {
-  return `${type}/error`
+export function errorActionType<T extends string>(type: T) {
+  return `${type}/error` as const
 }
 
 /**

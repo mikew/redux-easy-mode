@@ -1,7 +1,7 @@
 import { ReduxActionCreator } from 'createActions'
 
 function isReduxActionCreator(arg: any): arg is ReduxActionCreator {
-  return !!arg?.actionConstant
+  return !!arg?.actionType
 }
 
 export default isReduxActionCreator

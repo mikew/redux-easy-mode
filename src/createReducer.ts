@@ -31,10 +31,10 @@ interface ReduxReducerBuilder<State> {
 }
 
 interface AddHandler<State> {
-  // Handler that takes a string constant. Here it's up to the user to giver a
+  // Handler that takes a string action type. Here it's up to the user to give a
   // type for the action.
   <A extends Action>(
-    actionConstant: string,
+    actionType: string,
     handler: ReduxReducerCaseHandler<State, A>,
   ): ReduxReducerBuilder<State>
 
@@ -62,22 +62,22 @@ function createReducer<State>(
       handler: ReduxReducerCaseHandler<State, Action>,
     ) => {
       if (isReduxActionCreator(actionCreator)) {
-        handlers[actionCreator.actionConstant] = handler
+        handlers[actionCreator.actionType] = handler
       } else {
         handlers[actionCreator] = handler
       }
       return builder
     },
     addStartHandler: (actionCreator, handler) => {
-      handlers[startActionType(actionCreator.actionConstant)] = handler as any
+      handlers[startActionType(actionCreator.actionType)] = handler as any
       return builder
     },
     addSuccessHandler: (actionCreator, handler) => {
-      handlers[successActionType(actionCreator.actionConstant)] = handler as any
+      handlers[successActionType(actionCreator.actionType)] = handler as any
       return builder
     },
     addErrorHandler: (actionCreator, handler) => {
-      handlers[errorActionType(actionCreator.actionConstant)] = handler as any
+      handlers[errorActionType(actionCreator.actionType)] = handler as any
       return builder
     },
   }

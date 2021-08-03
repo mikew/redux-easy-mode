@@ -8,10 +8,10 @@ interface ReduxActionSideEffectHandler<Action> {
 }
 
 interface ReduxActionSideEffect {
-  // Handler that takes a string constant. Here it's up to the user to giver a
+  // Handler that takes a string action type. Here it's up to the user to give a
   // type for the action.
   <A extends Action>(
-    actionConstant: string,
+    actionType: string,
     handler: ReduxActionSideEffectHandler<A>,
   ): void | (() => void)
 
@@ -35,9 +35,7 @@ const reduxActionSideEffect: ReduxActionSideEffect = (
   action: ReduxActionCreator | string,
   handler: ReduxActionSideEffectHandler<Action>,
 ) => {
-  const actionType = isReduxActionCreator(action)
-    ? action.actionConstant
-    : action
+  const actionType = isReduxActionCreator(action) ? action.actionType : action
 
   if (!actionSideEffects[actionType]) {
     actionSideEffects[actionType] = []

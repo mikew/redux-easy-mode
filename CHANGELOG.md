@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 1.2.0 (2021-08-03)
+
+
+### Features
+
+* Rename action `actionConstant` to `actionType` ([#2](https://github.com/mikew/redux-easy-mode/issues/2)) ([8f9b7fe](https://github.com/mikew/redux-easy-mode/commit/8f9b7fe8dc613846277313cc5becb75a8a036182))
+
 ## 1.1.0 (2021-08-01)
 
 

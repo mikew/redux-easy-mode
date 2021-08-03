@@ -1,19 +1,17 @@
 import { Dispatch, MiddlewareAPI } from 'redux'
 
 interface ReduxSelectorSideEffectHandler<T> {
-  (config: {
-    value: T
-    previousValue: T | typeof UNSET_PREVIOUS_VALUE
-    dispatch: Dispatch
-    getState: () => any
-  }): void | (() => void)
+  (
+    value: T,
+    previousValue: T | undefined,
+    dispatch: Dispatch,
+    getState: () => any,
+  ): void | (() => void)
 }
 
 interface Comparator<T> {
   (a: T, b: T): boolean
 }
-
-export const UNSET_PREVIOUS_VALUE = Symbol()
 
 const selectorSideEffects: {
   handler: ReduxSelectorSideEffectHandler<any>
@@ -34,7 +32,7 @@ function reduxSelectorSideEffect<
   selectorSideEffects.push({
     handler,
     selector,
-    previousValue: UNSET_PREVIOUS_VALUE,
+    previousValue: undefined,
     compare: comparator ? comparator : (a, b) => a === b,
   })
 }
@@ -48,35 +46,28 @@ export function runSelectorSideEffects(store: MiddlewareAPI) {
 
   const state = store.getState()
 
-  for (const wut of selectorSideEffects) {
-    const newValue = wut.selector(state)
+  for (const sideEffect of selectorSideEffects) {
+    const newValue = sideEffect.selector(state)
 
-    if (!wut.compare(wut.previousValue, newValue)) {
+    if (!sideEffect.compare(sideEffect.previousValue, newValue)) {
       try {
-        wut.cleanup?.()
+        sideEffect.cleanup?.()
       } catch (err) {
         console.error(err)
       }
 
       // Pull out the previousValue since we intentionally overwrite it ASAP.
-      const { previousValue } = wut
-      wut.previousValue = newValue
+      const { previousValue } = sideEffect
+      sideEffect.previousValue = newValue
 
-      const maybeCleanupFunction = wut.handler({
-        value: newValue,
+      const maybeCleanupFunction = sideEffect.handler(
+        newValue,
         previousValue,
-        dispatch: store.dispatch,
-        getState: store.getState,
-      })
+        store.dispatch,
+        store.getState,
+      )
 
-      wut.cleanup = maybeCleanupFunction
+      sideEffect.cleanup = maybeCleanupFunction
     }
   }
 }
-
-// reduxSelectorSideEffect(
-//   (state: any) => ({ foo: 'bar' }),
-//   ({ value, previousValue }) => {
-//     console.log(value, previousValue)
-//   },
-// )

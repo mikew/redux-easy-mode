@@ -265,7 +265,7 @@ cleanup.
 ```ts
 import { reduxActionSideEffect } from 'redux-easy-mode'
 
-reduxActionSideEffect(actions.increment, ({ action, dispatch, getState }) => {
+reduxActionSideEffect(actions.increment, (action, dispatch, getState) => {
   console.log(`${actions.increment.actionType} was dispatched`)
 
   // Return a function if you'd like to do some cleanup before this function is
@@ -287,12 +287,12 @@ import { reduxSelectorSideEffect } from 'redux-easy-mode'
 
 reduxSelectorSideEffect(
   (state: RootState) => state.some.value,
-  ({ value, previousValue, dispatch, getState }) => {
+  (value, previousValue, dispatch, getState) => {
     console.log('value:', value)
     console.log('previousValue:', previousValue)
 
-    // Return a function if you'd like to do some cleanup before this function is
-    // called again.
+    // Return a function if you'd like to do some cleanup before this function
+    // is called again.
     return () => {
       console.log('cleanup')
     }

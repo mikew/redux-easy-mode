@@ -241,6 +241,8 @@ function reducer(state = initialState, action: AnyAction) {
 }
 ```
 
+---
+
 ## Side Effects
 
 If async actions are not enough for you, there is also a side effect middleware.
@@ -299,6 +301,8 @@ reduxSelectorSideEffect(
   },
 )
 ```
+
+---
 
 ## See Also
 

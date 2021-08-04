@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.3.1 (2021-08-04)
+
+
+### Bug Fixes
+
+* update README.md ([6cce43b](https://github.com/mikew/redux-easy-mode/commit/6cce43b84fe9cc672ff8cf4dc3ad901ba7da659b))
+
 ## 1.3.0 (2021-08-03)
 
 

@@ -9,7 +9,14 @@
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {},
-  "keywords": [],
+  "keywords": [
+    "redux",
+    "easy",
+    "async",
+    "await",
+    "promise",
+    "side effect"
+  ],
   "author": "",
   "license": "MIT",
   "devDependencies": {

@@ -5,6 +5,11 @@ import { runSelectorSideEffects } from './reduxSelectorSideEffect'
 
 export default function sideEffectMiddleware(): Middleware {
   return (store) => (dispatch) => (action) => {
+    // Return if there is no action or payload.
+    if (!action || !action.payload) {
+      return dispatch(action)
+    }
+
     const result = dispatch(action)
 
     runActionSideEffects(action, store)

@@ -4,7 +4,7 @@ import { Action, Dispatch, MiddlewareAPI } from 'redux'
 import isReduxActionCreator from '../isReduxActionCreator'
 
 interface ReduxActionSideEffectHandler<Action> {
-  (action: Action, dispatch: Dispatch, getState: () => any): void
+  (action: Action, dispatch: Dispatch, getState: () => any): void | (() => void)
 }
 
 interface ReduxActionSideEffect {
@@ -13,14 +13,14 @@ interface ReduxActionSideEffect {
   <A extends Action>(
     actionType: string,
     handler: ReduxActionSideEffectHandler<A>,
-  ): void | (() => void)
+  ): void
 
   // Handler that takes an action creator. The action type will be inferred
   // for the user.
   <ActionCreator extends ReduxActionCreator, Rt = ReturnType<ActionCreator>>(
     actionCreator: ActionCreator,
     handler: ReduxActionSideEffectHandler<Rt>,
-  ): void | (() => void)
+  ): void
 }
 
 const actionSideEffects: Record<
@@ -46,10 +46,7 @@ const reduxActionSideEffect: ReduxActionSideEffect = (
 
 export default reduxActionSideEffect
 
-export async function runActionSideEffects(
-  action: Action,
-  store: MiddlewareAPI,
-) {
+export function runActionSideEffects(action: Action, store: MiddlewareAPI) {
   if (actionSideEffects[action.type]) {
     for (const sideEffect of actionSideEffects[action.type]) {
       try {

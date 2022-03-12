@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.3.3 (2022-03-12)
+
+
+### Bug Fixes
+
+* Side effects should still run if action has no payload ([#6](https://github.com/mikew/redux-easy-mode/issues/6)) ([b71f1fb](https://github.com/mikew/redux-easy-mode/commit/b71f1fbe3f45a7f6e3e73fe7503112853c38488d))
+
 ### 1.3.2 (2022-02-27)
 
 

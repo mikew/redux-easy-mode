@@ -1,4 +1,4 @@
-import { ReduxActionCreator } from 'createActions'
+import type { ReduxActionCreator } from 'createActions'
 
 function isReduxActionCreator(arg: any): arg is ReduxActionCreator {
   return !!arg?.actionType

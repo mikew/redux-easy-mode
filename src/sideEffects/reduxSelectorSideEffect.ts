@@ -1,4 +1,4 @@
-import { Dispatch, MiddlewareAPI } from 'redux'
+import type { Dispatch, MiddlewareAPI } from 'redux'
 
 interface ReduxSelectorSideEffectHandler<T> {
   (

@@ -1,5 +1,5 @@
-import { ReduxActionCreator } from 'createActions'
-import { Action, Dispatch, MiddlewareAPI } from 'redux'
+import type { ReduxActionCreator } from 'createActions'
+import type { Action, Dispatch, MiddlewareAPI } from 'redux'
 
 import isReduxActionCreator from '../isReduxActionCreator'
 

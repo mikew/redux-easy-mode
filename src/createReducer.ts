@@ -1,14 +1,16 @@
-import { Action } from 'redux'
+import type { Action } from 'redux'
 
-import {
+import type {
   ActionErrorType,
   ActionStartType,
   ActionSuccessType,
+} from './async/asyncMiddleware'
+import {
   errorActionType,
   startActionType,
   successActionType,
 } from './async/asyncMiddleware'
-import { ReduxActionCreator } from './createActions'
+import type { ReduxActionCreator } from './createActions'
 import isReduxActionCreator from './isReduxActionCreator'
 
 interface ReduxReducerBuilder<State> {

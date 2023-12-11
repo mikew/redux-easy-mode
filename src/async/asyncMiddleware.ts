@@ -1,4 +1,6 @@
-import { Dispatch, Middleware, MiddlewareAPI } from 'redux'
+import type { Dispatch, Middleware, MiddlewareAPI } from 'redux'
+
+import isAction from '../isAction'
 
 export interface MiddlewareOptions {
   throwOriginalError: boolean
@@ -10,15 +12,15 @@ interface ActionContext {
 
 export type PayloadType<T> =
   // If T is a function that returns a promise, infer U from Promise.
+  // ... If T is a function, infer U from its return type.
+  // ... ... If T is just a promise, infer U.
   T extends (...args: any[]) => Promise<infer U>
     ? U
-    : // If T is a function, infer U from its return type.
-    T extends (...args: any[]) => infer U
-    ? U
-    : // If T is just a promise, infer U.
-    T extends Promise<infer U>
-    ? U
-    : T
+    : T extends (...args: any[]) => infer U
+      ? U
+      : T extends Promise<infer U>
+        ? U
+        : T
 
 export type ActionStartType<F extends (...args: any[]) => { payload: any }> =
   Omit<ReturnType<F>, 'payload'>
@@ -57,21 +59,21 @@ function asyncMiddleware(options?: MiddlewareOptions): Middleware {
 
   currentOptions = opts
 
-  return (store) => (dispatch) => (action) => {
+  return (store) => (next) => (action) => {
     const context: ActionContext = {
       didError: false,
     }
 
     // Return if there is no action or payload.
-    if (!action || !action.payload) {
-      return dispatch(action)
+    if (!isAction(action) || !('payload' in action)) {
+      return next(action)
     }
 
     // If the payload is already a promise, IE `fetch('http://...')`
     // dispatch the start action while returning the promise with our
     // success / error handlers.
     if (isPromise(action.payload)) {
-      dispatchPendingAction(dispatch, action)
+      dispatchPendingAction(store.dispatch, action)
 
       return attachHandlers(context, store, action, action.payload)
     }
@@ -81,12 +83,12 @@ function asyncMiddleware(options?: MiddlewareOptions): Middleware {
     // If the result is not a promise, just turn it into one, attach our
     // success / error handlers, and return it.
     if (typeof action.payload === 'function') {
-      dispatchPendingAction(dispatch, action)
+      dispatchPendingAction(store.dispatch, action)
       let result: any = null
 
       try {
         result = action.payload(store.dispatch, store.getState)
-      } catch (err) {
+      } catch (err: any) {
         const errorResult = dispatchRejectedAction(context, store, action, err)
 
         if (!currentOptions.throwOriginalError) {
@@ -102,7 +104,7 @@ function asyncMiddleware(options?: MiddlewareOptions): Middleware {
     }
 
     // Just pass the action along if we've somehow gotten here.
-    return dispatch(action)
+    return next(action)
   }
 }
 

@@ -1,4 +1,4 @@
-import { Dispatch } from 'redux'
+import type { Dispatch } from 'redux'
 
 import {
   clearActionHistory,
@@ -6,9 +6,8 @@ import {
   getActionHistory,
 } from '../test/testStore'
 
+import type { ActionErrorType, ActionSuccessType } from './asyncMiddleware'
 import {
-  ActionErrorType,
-  ActionSuccessType,
   errorActionType,
   startActionType,
   successActionType,
@@ -31,7 +30,7 @@ describe('asyncMiddleware', () => {
 
       const result = await store.dispatch({
         type: 'foo',
-        payload(dispatch: Dispatch<any>) {
+        payload(dispatch: Dispatch) {
           dispatch({ type: 'OMG' })
 
           return 'foo'
@@ -114,7 +113,7 @@ describe('asyncMiddleware', () => {
 
       const result = await store.dispatch({
         type: 'foo',
-        async payload(dispatch: Dispatch<any>) {
+        async payload(dispatch: Dispatch) {
           const payload = await Promise.resolve(42)
           dispatch({ payload, type: 'OMG' })
 
@@ -153,7 +152,7 @@ describe('asyncMiddleware', () => {
 
       const result = await store.dispatch({
         type: 'foo',
-        async payload(dispatch: Dispatch<any>) {
+        async payload(dispatch: Dispatch) {
           const payload = await Promise.resolve(42)
           dispatch({ payload, type: 'OMG' })
 
@@ -183,7 +182,7 @@ describe('asyncMiddleware', () => {
 
       await store.dispatch({
         type: 'foo',
-        payload(dispatch: Dispatch<any>) {
+        payload(dispatch: Dispatch) {
           dispatch({ type: 'OMG' })
           throw new Error('the error message')
         },
@@ -237,7 +236,7 @@ describe('asyncMiddleware', () => {
 
       await store.dispatch({
         type: 'foo',
-        async payload(dispatch: Dispatch<any>) {
+        async payload(dispatch: Dispatch) {
           const result = await Promise.reject(new Error('the error message'))
           dispatch({ type: 'OMG', payload: result })
 
@@ -268,7 +267,7 @@ describe('asyncMiddleware', () => {
 
       const action = () => ({
         type: 'foo',
-        payload(dispatch: Dispatch<any>) {
+        payload(dispatch: Dispatch) {
           dispatch({ type: 'OMG' })
 
           return 'foo'

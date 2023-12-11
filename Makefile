@@ -15,6 +15,8 @@ endif
 build: prepare-when-local
 	rm -rf lib/
 	./node_modules/.bin/concurrently './node_modules/.bin/eslint --max-warnings 0 --ext js,jsx,ts,tsx src/' './node_modules/.bin/tsc --noEmit' './node_modules/.bin/tsup'
+	rm -rf lib/esm/test/ lib/cjs/test/
+	find ./lib -type f -name '*.test.*' -delete
 
 test: prepare-when-local
 ifeq ($(CI),true)

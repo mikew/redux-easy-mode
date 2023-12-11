@@ -133,14 +133,13 @@ export function errorActionType<T extends string>(type: T) {
 /**
  * Checks if the argument given is a Promise or Promise-like object.
  */
-function isPromise(
-  // Using any here because `unknown` would involve a lot more checks, and they
-  // can fail for promise-like things that aren't actually a Promise but are
-  // still then-able.
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- see above
-  promiseLike: any,
-): promiseLike is Promise<unknown> {
-  if (typeof promiseLike?.then === 'function') {
+function isPromise(promiseLike: unknown): promiseLike is Promise<unknown> {
+  if (
+    promiseLike != null &&
+    typeof promiseLike === 'object' &&
+    'then' in promiseLike &&
+    typeof promiseLike?.then === 'function'
+  ) {
     return true
   }
 

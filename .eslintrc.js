@@ -11,9 +11,4 @@ module.exports = {
     // If the project uses graphql:
     // '@promoboxx/eslint-config/graphql',
   ],
-  rules: {
-    // This is library code, and really old library code at that.
-    '@typescript-eslint/consistent-type-assertions': 'off',
-    '@typescript-eslint/no-explicit-any': 'off',
-  },
 }

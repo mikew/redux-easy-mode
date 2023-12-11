@@ -71,14 +71,18 @@ function createReducer<State>(
       return builder
     },
     addStartHandler: (actionCreator, handler) => {
+      // TODO No clue how to handle the types without `any` here.
+      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions, @typescript-eslint/no-explicit-any -- see above
       handlers[startActionType(actionCreator.actionType)] = handler as any
       return builder
     },
     addSuccessHandler: (actionCreator, handler) => {
+      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions, @typescript-eslint/no-explicit-any -- see above
       handlers[successActionType(actionCreator.actionType)] = handler as any
       return builder
     },
     addErrorHandler: (actionCreator, handler) => {
+      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions, @typescript-eslint/no-explicit-any -- see above
       handlers[errorActionType(actionCreator.actionType)] = handler as any
       return builder
     },

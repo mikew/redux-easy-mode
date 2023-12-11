@@ -8,7 +8,7 @@ export default function isAction(action: unknown): action is Action<string> {
   )
 }
 
-function isPlainObject(obj: unknown): obj is object {
+export function isPlainObject(obj: unknown): obj is object {
   if (typeof obj !== 'object' || obj == null) {
     return false
   }

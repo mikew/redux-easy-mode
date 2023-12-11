@@ -1,3 +1,6 @@
+// TODO Switching the return type to `any` causes need for multiple checks
+// below.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- see above
 type ReduxPayloadCreator = (...args: any[]) => any
 
 type ReduxPayloadCreatorMap = Record<string, ReduxPayloadCreator>
@@ -29,8 +32,8 @@ type PayloadAndMeta<
   Rt = ReturnType<PayloadCreator>,
 > = Rt extends {
   type?: string
-  payload?: any
-  meta?: any
+  payload?: unknown
+  meta?: unknown
 }
   ? Rt
   : { payload: Rt }
@@ -42,12 +45,14 @@ function createActions<
   // We have to use casting _somewhere_ with this variable. The types rely
   // heavily on inference, and there's no way an empty object will be assignable
   // to ReduxActionCreatorMap.
+  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- see above
   const actionCreators = {} as ReduxActionCreatorMap<
     Namespace,
     PayloadCreatorMap
   >
 
   for (const key in payloadCreatorMap) {
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- see comment at end of the function.
     actionCreators[key] = ((...args: any[]) => {
       const payloadOrObject = payloadCreatorMap[key](...args)
 
@@ -68,6 +73,7 @@ function createActions<
 
       // Need to cast here because there's no way to assign a function + extra
       // attributes in one go.
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- see above
     }) as any
 
     actionCreators[key].actionType = `${namespace}/${key}`

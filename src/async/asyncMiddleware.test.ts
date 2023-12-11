@@ -19,8 +19,14 @@ describe('asyncMiddleware', () => {
   it('works when action is null', () => {
     const store = createWithMiddleware((state) => state)
 
+    // Intentionally testing incorrect code.
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions, @typescript-eslint/no-explicit-any -- see above
     store.dispatch(null as any)
+    // Intentionally testing incorrect code.
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions, @typescript-eslint/no-explicit-any -- see above
     store.dispatch(undefined as any)
+    // Intentionally testing incorrect code.
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions, @typescript-eslint/no-explicit-any -- see above
     store.dispatch(0 as any)
   })
 
@@ -274,9 +280,12 @@ describe('asyncMiddleware', () => {
         },
       })
 
+      // TODO This means that users code has to do similar casting, maybe
+      // there's a better way?
+      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- see above
       const result = (await store.dispatch(
         action(),
-      )) as any as ActionSuccessType<typeof action>
+      )) as unknown as ActionSuccessType<typeof action>
 
       expect(result).toEqual({
         type: successActionType('foo'),
@@ -295,9 +304,12 @@ describe('asyncMiddleware', () => {
         },
       })
 
-      const result = (await store.dispatch(action())) as any as ActionErrorType<
-        typeof action
-      >
+      // TODO This means that users code has to do similar casting, maybe
+      // there's a better way?
+      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- see above
+      const result = (await store.dispatch(
+        action(),
+      )) as unknown as ActionErrorType<typeof action>
 
       expect(result).toEqual({
         type: errorActionType('foo'),

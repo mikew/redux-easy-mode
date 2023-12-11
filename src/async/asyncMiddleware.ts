@@ -1,4 +1,4 @@
-import type { Dispatch, Middleware, MiddlewareAPI } from 'redux'
+import type { Action, Dispatch, Middleware, MiddlewareAPI } from 'redux'
 
 import isAction from '../isAction'
 
@@ -22,20 +22,28 @@ export type PayloadType<T> =
         ? U
         : T
 
-export type ActionStartType<F extends (...args: any[]) => { payload: any }> =
-  Omit<ReturnType<F>, 'payload'>
+export type ActionStartType<
+  F extends (...args: unknown[]) => { payload: unknown },
+> = Omit<ReturnType<F>, 'payload'>
 
-export type ActionSuccessType<F extends (...args: any[]) => { payload: any }> =
-  Omit<ReturnType<F>, 'payload'> & {
-    payload: PayloadType<ReturnType<F>['payload']>
-    error: false
-  }
+export type ActionSuccessType<
+  F extends (...args: unknown[]) => { payload: unknown },
+> = Omit<ReturnType<F>, 'payload'> & {
+  payload: PayloadType<ReturnType<F>['payload']>
+  error: false
+}
 
-export type ActionErrorType<F extends (...args: any[]) => { payload: any }> =
-  Omit<ReturnType<F>, 'payload'> & {
-    payload: string
-    error: true
-  }
+export type ActionErrorType<
+  F extends (...args: unknown[]) => { payload: unknown },
+> = Omit<ReturnType<F>, 'payload'> & {
+  payload: string
+  error: true
+}
+
+export type AsyncAction = Action & {
+  error?: boolean
+  meta?: { asyncPayload?: { skipOuter?: boolean }; [key: string]: unknown }
+}
 
 const defaultOptions: MiddlewareOptions = {
   throwOriginalError: true,
@@ -84,11 +92,11 @@ function asyncMiddleware(options?: MiddlewareOptions): Middleware {
     // success / error handlers, and return it.
     if (typeof action.payload === 'function') {
       dispatchPendingAction(store.dispatch, action)
-      let result: any = null
+      let result: Promise<unknown> | null = null
 
       try {
         result = action.payload(store.dispatch, store.getState)
-      } catch (err: any) {
+      } catch (err) {
         const errorResult = dispatchRejectedAction(context, store, action, err)
 
         if (!currentOptions.throwOriginalError) {
@@ -125,7 +133,13 @@ export function errorActionType<T extends string>(type: T) {
 /**
  * Checks if the argument given is a Promise or Promise-like object.
  */
-function isPromise(promiseLike: any): promiseLike is Promise<any> {
+function isPromise(
+  // Using any here because `unknown` would involve a lot more checks, and they
+  // can fail for promise-like things that aren't actually a Promise but are
+  // still then-able.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- see above
+  promiseLike: any,
+): promiseLike is Promise<unknown> {
   if (typeof promiseLike?.then === 'function') {
     return true
   }
@@ -136,14 +150,14 @@ function isPromise(promiseLike: any): promiseLike is Promise<any> {
 /**
  * Check if start / success actions should be skipped.
  */
-function shouldSkipOuter(action: any) {
-  return !!action?.meta?.asyncPayload?.skipOuter
+function shouldSkipOuter(action: AsyncAction) {
+  return !!action.meta?.asyncPayload?.skipOuter
 }
 
 /**
  * Dispatches the start action.
  */
-function dispatchPendingAction(dispatch: Dispatch, action: any) {
+function dispatchPendingAction(dispatch: Dispatch, action: AsyncAction) {
   if (shouldSkipOuter(action)) {
     return
   }
@@ -161,8 +175,8 @@ function dispatchPendingAction(dispatch: Dispatch, action: any) {
 function dispatchFulfilledAction(
   context: ActionContext,
   store: MiddlewareAPI,
-  action: any,
-  payload: any,
+  action: AsyncAction,
+  payload: unknown,
 ) {
   if (context.didError) {
     return
@@ -187,14 +201,19 @@ function dispatchFulfilledAction(
 function dispatchRejectedAction(
   context: ActionContext,
   store: MiddlewareAPI,
-  action: any,
-  err: Error,
+  action: AsyncAction,
+  err: unknown,
 ) {
   context.didError = true
 
+  let errorMessage = 'Unknown error'
+  if (err instanceof Error) {
+    errorMessage = err.message || 'Error'
+  }
+
   const result = store.dispatch({
     type: errorActionType(action.type),
-    payload: (err.message || err || '').toString(),
+    payload: errorMessage,
     error: true,
     meta: action.meta,
   })
@@ -210,12 +229,12 @@ function dispatchRejectedAction(
  * Attaches fulfilled / error handlers to a promise while still throwing
  * the original error.
  */
-function attachHandlers(
+function attachHandlers<T extends Promise<unknown>>(
   context: ActionContext,
   store: MiddlewareAPI,
-  action: any,
-  promise: Promise<any>,
-): Promise<any> {
+  action: AsyncAction,
+  promise: T,
+) {
   return promise
     .then((payload) => dispatchFulfilledAction(context, store, action, payload))
     .catch((err) => dispatchRejectedAction(context, store, action, err))

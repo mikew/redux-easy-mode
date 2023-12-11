@@ -6,7 +6,7 @@
     "declaration": true,
     "sourceMap": true,
     "outDir": "./lib",
-    "rootDir": "./src",
+    "rootDir": "./",
 
     "strict": true,
 
@@ -16,5 +16,6 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true
-  }
+  },
+  "include": ["src/", "tsup.config.ts"]
 }

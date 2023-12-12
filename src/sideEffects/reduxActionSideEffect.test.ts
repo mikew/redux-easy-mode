@@ -7,8 +7,8 @@ import reduxActionSideEffect, {
 describe('reduxActionSideEffect', () => {
   it('is called when the given type is dispatched', () => {
     let actionPayload: unknown
-    const dispatch = jest.fn()
-    const getState = jest.fn()
+    const dispatch = vi.fn()
+    const getState = vi.fn()
 
     reduxActionSideEffect(
       testActions.simplePayload,
@@ -30,9 +30,9 @@ describe('reduxActionSideEffect', () => {
   })
 
   it('allows for a cleanup function', () => {
-    const dispatch = jest.fn()
-    const getState = jest.fn()
-    const cleanup = jest.fn()
+    const dispatch = vi.fn()
+    const getState = vi.fn()
+    const cleanup = vi.fn()
 
     reduxActionSideEffect(testActions.simplePayload, () => {
       return cleanup

@@ -1,4 +1,6 @@
-import { Dispatch, Middleware, MiddlewareAPI } from 'redux'
+import type { Action, Dispatch, Middleware, MiddlewareAPI } from 'redux'
+
+import isAction from '../isAction'
 
 export interface MiddlewareOptions {
   throwOriginalError: boolean
@@ -10,30 +12,38 @@ interface ActionContext {
 
 export type PayloadType<T> =
   // If T is a function that returns a promise, infer U from Promise.
+  // ... If T is a function, infer U from its return type.
+  // ... ... If T is just a promise, infer U.
   T extends (...args: any[]) => Promise<infer U>
     ? U
-    : // If T is a function, infer U from its return type.
-    T extends (...args: any[]) => infer U
-    ? U
-    : // If T is just a promise, infer U.
-    T extends Promise<infer U>
-    ? U
-    : T
+    : T extends (...args: any[]) => infer U
+      ? U
+      : T extends Promise<infer U>
+        ? U
+        : T
 
-export type ActionStartType<F extends (...args: any[]) => { payload: any }> =
-  Omit<ReturnType<F>, 'payload'>
+export type ActionStartType<
+  F extends (...args: unknown[]) => { payload: unknown },
+> = Omit<ReturnType<F>, 'payload'>
 
-export type ActionSuccessType<F extends (...args: any[]) => { payload: any }> =
-  Omit<ReturnType<F>, 'payload'> & {
-    payload: PayloadType<ReturnType<F>['payload']>
-    error: false
-  }
+export type ActionSuccessType<
+  F extends (...args: unknown[]) => { payload: unknown },
+> = Omit<ReturnType<F>, 'payload'> & {
+  payload: PayloadType<ReturnType<F>['payload']>
+  error: false
+}
 
-export type ActionErrorType<F extends (...args: any[]) => { payload: any }> =
-  Omit<ReturnType<F>, 'payload'> & {
-    payload: string
-    error: true
-  }
+export type ActionErrorType<
+  F extends (...args: unknown[]) => { payload: unknown },
+> = Omit<ReturnType<F>, 'payload'> & {
+  payload: string
+  error: true
+}
+
+export type AsyncAction = Action & {
+  error?: boolean
+  meta?: { asyncPayload?: { skipOuter?: boolean }; [key: string]: unknown }
+}
 
 const defaultOptions: MiddlewareOptions = {
   throwOriginalError: true,
@@ -57,21 +67,21 @@ function asyncMiddleware(options?: MiddlewareOptions): Middleware {
 
   currentOptions = opts
 
-  return (store) => (dispatch) => (action) => {
+  return (store) => (next) => (action) => {
     const context: ActionContext = {
       didError: false,
     }
 
     // Return if there is no action or payload.
-    if (!action || !action.payload) {
-      return dispatch(action)
+    if (!isAction(action) || !('payload' in action)) {
+      return next(action)
     }
 
     // If the payload is already a promise, IE `fetch('http://...')`
     // dispatch the start action while returning the promise with our
     // success / error handlers.
     if (isPromise(action.payload)) {
-      dispatchPendingAction(dispatch, action)
+      dispatchPendingAction(store.dispatch, action)
 
       return attachHandlers(context, store, action, action.payload)
     }
@@ -81,8 +91,8 @@ function asyncMiddleware(options?: MiddlewareOptions): Middleware {
     // If the result is not a promise, just turn it into one, attach our
     // success / error handlers, and return it.
     if (typeof action.payload === 'function') {
-      dispatchPendingAction(dispatch, action)
-      let result: any = null
+      dispatchPendingAction(store.dispatch, action)
+      let result: Promise<unknown> | null = null
 
       try {
         result = action.payload(store.dispatch, store.getState)
@@ -102,7 +112,7 @@ function asyncMiddleware(options?: MiddlewareOptions): Middleware {
     }
 
     // Just pass the action along if we've somehow gotten here.
-    return dispatch(action)
+    return next(action)
   }
 }
 
@@ -123,8 +133,13 @@ export function errorActionType<T extends string>(type: T) {
 /**
  * Checks if the argument given is a Promise or Promise-like object.
  */
-function isPromise(promiseLike: any): promiseLike is Promise<any> {
-  if (typeof promiseLike?.then === 'function') {
+function isPromise(promiseLike: unknown): promiseLike is Promise<unknown> {
+  if (
+    promiseLike != null &&
+    typeof promiseLike === 'object' &&
+    'then' in promiseLike &&
+    typeof promiseLike?.then === 'function'
+  ) {
     return true
   }
 
@@ -134,14 +149,14 @@ function isPromise(promiseLike: any): promiseLike is Promise<any> {
 /**
  * Check if start / success actions should be skipped.
  */
-function shouldSkipOuter(action: any) {
-  return !!action?.meta?.asyncPayload?.skipOuter
+function shouldSkipOuter(action: AsyncAction) {
+  return !!action.meta?.asyncPayload?.skipOuter
 }
 
 /**
  * Dispatches the start action.
  */
-function dispatchPendingAction(dispatch: Dispatch, action: any) {
+function dispatchPendingAction(dispatch: Dispatch, action: AsyncAction) {
   if (shouldSkipOuter(action)) {
     return
   }
@@ -159,8 +174,8 @@ function dispatchPendingAction(dispatch: Dispatch, action: any) {
 function dispatchFulfilledAction(
   context: ActionContext,
   store: MiddlewareAPI,
-  action: any,
-  payload: any,
+  action: AsyncAction,
+  payload: unknown,
 ) {
   if (context.didError) {
     return
@@ -185,14 +200,19 @@ function dispatchFulfilledAction(
 function dispatchRejectedAction(
   context: ActionContext,
   store: MiddlewareAPI,
-  action: any,
-  err: Error,
+  action: AsyncAction,
+  err: unknown,
 ) {
   context.didError = true
 
+  let errorMessage = 'Unknown error'
+  if (err instanceof Error) {
+    errorMessage = err.message || 'Error'
+  }
+
   const result = store.dispatch({
     type: errorActionType(action.type),
-    payload: (err.message || err || '').toString(),
+    payload: errorMessage,
     error: true,
     meta: action.meta,
   })
@@ -208,12 +228,12 @@ function dispatchRejectedAction(
  * Attaches fulfilled / error handlers to a promise while still throwing
  * the original error.
  */
-function attachHandlers(
+function attachHandlers<T extends Promise<unknown>>(
   context: ActionContext,
   store: MiddlewareAPI,
-  action: any,
-  promise: Promise<any>,
-): Promise<any> {
+  action: AsyncAction,
+  promise: T,
+) {
   return promise
     .then((payload) => dispatchFulfilledAction(context, store, action, payload))
     .catch((err) => dispatchRejectedAction(context, store, action, err))

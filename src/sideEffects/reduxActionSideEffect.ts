@@ -1,10 +1,17 @@
-import { ReduxActionCreator } from 'createActions'
-import { Action, Dispatch, MiddlewareAPI } from 'redux'
+import type { ReduxActionCreator } from 'createActions'
+import type { Action, Dispatch, MiddlewareAPI } from 'redux'
 
 import isReduxActionCreator from '../isReduxActionCreator'
 
 interface ReduxActionSideEffectHandler<Action> {
-  (action: Action, dispatch: Dispatch, getState: () => any): void | (() => void)
+  (
+    action: Action,
+    dispatch: Dispatch,
+    // Setting this to `unknown` makes it hard for people to just specify their
+    // own `getState` type.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- see above
+    getState: () => any,
+  ): void | (() => void)
 }
 
 interface ReduxActionSideEffect {

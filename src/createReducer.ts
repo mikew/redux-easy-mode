@@ -1,14 +1,16 @@
-import { Action } from 'redux'
+import type { Action } from 'redux'
 
-import {
+import type {
   ActionErrorType,
   ActionStartType,
   ActionSuccessType,
+} from './async/asyncMiddleware'
+import {
   errorActionType,
   startActionType,
   successActionType,
 } from './async/asyncMiddleware'
-import { ReduxActionCreator } from './createActions'
+import type { ReduxActionCreator } from './createActions'
 import isReduxActionCreator from './isReduxActionCreator'
 
 interface ReduxReducerBuilder<State> {
@@ -69,14 +71,18 @@ function createReducer<State>(
       return builder
     },
     addStartHandler: (actionCreator, handler) => {
+      // TODO No clue how to handle the types without `any` here.
+      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions, @typescript-eslint/no-explicit-any -- see above
       handlers[startActionType(actionCreator.actionType)] = handler as any
       return builder
     },
     addSuccessHandler: (actionCreator, handler) => {
+      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions, @typescript-eslint/no-explicit-any -- see above
       handlers[successActionType(actionCreator.actionType)] = handler as any
       return builder
     },
     addErrorHandler: (actionCreator, handler) => {
+      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions, @typescript-eslint/no-explicit-any -- see above
       handlers[errorActionType(actionCreator.actionType)] = handler as any
       return builder
     },

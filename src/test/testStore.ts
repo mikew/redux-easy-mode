@@ -1,19 +1,14 @@
-import {
-  Action,
-  applyMiddleware,
-  createStore,
-  Middleware,
-  Reducer,
-  Store,
-} from 'redux'
+import type { Action, Middleware, Reducer, Store } from 'redux'
+import { applyMiddleware, createStore } from 'redux'
 
 import asyncMiddleware from '../async/asyncMiddleware'
+import isAction from '../isAction'
 import sideEffectMiddleware from '../sideEffects/sideEffectMiddleware'
 
 const actionHistory: Action[] = []
 
 const logger: Middleware = () => (dispatch) => (action) => {
-  if (!action) {
+  if (!isAction(action)) {
     return dispatch({ type: 'undefined' })
   }
 

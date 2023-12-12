@@ -1,10 +1,13 @@
-import { Dispatch, MiddlewareAPI } from 'redux'
+import type { Dispatch, MiddlewareAPI } from 'redux'
 
 interface ReduxSelectorSideEffectHandler<T> {
   (
     value: T,
     previousValue: T | undefined,
     dispatch: Dispatch,
+    // Setting this to `unknown` makes it hard for people to just specify their
+    // own `getState` type.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- see above
     getState: () => any,
   ): void | (() => void)
 }
@@ -14,10 +17,16 @@ interface Comparator<T> {
 }
 
 const selectorSideEffects: {
+  // It's either `any` here, or "could be instantiated with an arbitrary type
+  // which could be unrelated to 'unknown'" // below.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- see above
   handler: ReduxSelectorSideEffectHandler<any>
-  previousValue: any
+  previousValue: unknown
+  // It's either `any` here, or "could be instantiated with an arbitrary type
+  // which could be unrelated to 'unknown'" // below.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- see above
   compare: Comparator<any>
-  selector: (state: any) => any
+  selector: (state: unknown) => unknown
   cleanup?: void | (() => void)
 }[] = []
 

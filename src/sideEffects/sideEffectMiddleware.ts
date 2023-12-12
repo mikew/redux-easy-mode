@@ -1,16 +1,18 @@
-import { Middleware } from 'redux'
+import type { Middleware } from 'redux'
+
+import isAction from '../isAction'
 
 import { runActionSideEffects } from './reduxActionSideEffect'
 import { runSelectorSideEffects } from './reduxSelectorSideEffect'
 
 export default function sideEffectMiddleware(): Middleware {
-  return (store) => (dispatch) => (action) => {
+  return (store) => (next) => (action) => {
     // Return if there is no action.
-    if (!action) {
-      return dispatch(action)
+    if (!isAction(action)) {
+      return next(action)
     }
 
-    const result = dispatch(action)
+    const result = next(action)
 
     runActionSideEffects(action, store)
     runSelectorSideEffects(store)

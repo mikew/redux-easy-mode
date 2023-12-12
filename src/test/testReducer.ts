@@ -12,6 +12,7 @@ const initialState = {
     arg1: -1,
     arg2: '',
   },
+  identityPayload: '',
 
   start: '',
   success: '',
@@ -37,6 +38,10 @@ const testReducer = createReducer(initialState, (builder) => {
         arg1: action.payload.arg1,
         arg2: action.payload.arg2,
       },
+    }))
+    .addHandler(testActions.identityPayload, (state, action) => ({
+      ...state,
+      identityPayload: action.payload,
     }))
     .addStartHandler(testActions.promisePayload, (state) => ({
       ...state,

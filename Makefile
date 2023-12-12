@@ -19,11 +19,7 @@ build: prepare-when-local
 	find ./lib -type f -name '*.test.*' -delete
 
 test: prepare-when-local
-ifeq ($(CI),true)
-	./node_modules/.bin/jest --ci
-else
-	node --inspect=9241 ./node_modules/.bin/jest --watch
-endif
+	./node_modules/.bin/vitest
 
 deploy:
 ifeq ($(GITHUB_REF),refs/heads/main)

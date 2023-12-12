@@ -32,16 +32,13 @@
   "license": "MIT",
   "devDependencies": {
     "@promoboxx/eslint-config": "^3.2.0",
-    "@types/jest": "^29.5.11",
     "concurrently": "^8.2.2",
     "eslint": "^8.55.0",
-    "jest": "^29.7.0",
-    "jest-environment-jsdom": "^29.7.0",
     "prettier": "^3.1.1",
     "redux": "^5.0.0",
-    "ts-jest": "^29.1.1",
     "tsup": "^8.0.1",
-    "typescript": "^5.3.3"
+    "typescript": "^5.3.3",
+    "vitest": "^1.0.4"
   },
   "files": [
     "lib"

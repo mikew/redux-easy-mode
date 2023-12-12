@@ -12,9 +12,9 @@ function createState(state: State) {
 
 describe('reduxSelectorSideEffect', () => {
   it('is called when the result of the selector changes', () => {
-    const dispatch = jest.fn()
-    const valueTest = jest.fn()
-    const previousValueTest = jest.fn()
+    const dispatch = vi.fn()
+    const valueTest = vi.fn()
+    const previousValueTest = vi.fn()
 
     reduxSelectorSideEffect(
       (state: State) => state.foo,
@@ -45,10 +45,10 @@ describe('reduxSelectorSideEffect', () => {
   })
 
   it('allows for a cleanup function', () => {
-    const dispatch = jest.fn()
-    const valueTest = jest.fn()
-    const previousValueTest = jest.fn()
-    const cleanup = jest.fn()
+    const dispatch = vi.fn()
+    const valueTest = vi.fn()
+    const previousValueTest = vi.fn()
+    const cleanup = vi.fn()
 
     reduxSelectorSideEffect(
       (state: State) => state.foo,

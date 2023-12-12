@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.4.1 (2023-12-12)
+
+
+### Bug Fixes
+
+* "types" in package ([#8](https://github.com/mikew/redux-easy-mode/issues/8)) ([065a8be](https://github.com/mikew/redux-easy-mode/commit/065a8be2c8c8491c86fdef13c0c83e7f431ae6be))
+
 ## 1.4.0 (2023-12-12)
 
 

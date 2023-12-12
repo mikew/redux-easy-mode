@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 1.5.0 (2023-12-12)
+
+
+### Features
+
+* Add `identityPayloadCreator` helper ([#9](https://github.com/mikew/redux-easy-mode/issues/9)) ([89d2bdd](https://github.com/mikew/redux-easy-mode/commit/89d2bdde33356ca58e21b7283814a97d398cd127))
+
 ### 1.4.1 (2023-12-12)
 
 

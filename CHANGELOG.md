@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 1.4.0 (2023-12-12)
+
+
+### Features
+
+* ESM ([#7](https://github.com/mikew/redux-easy-mode/issues/7)) ([5cda9f0](https://github.com/mikew/redux-easy-mode/commit/5cda9f06d06420ce516c9bb7b1b28cf13dc55ce8))
+
 ### 1.3.3 (2022-03-12)
 
 

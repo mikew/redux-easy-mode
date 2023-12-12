@@ -29,6 +29,8 @@ export default createActions('example', {
 
   // An action with an argument that also returns a payload.
   setIncrementBy: (n: number) => n,
+  // Which could also be written as this.
+  // setIncrementBy: identityPayloadCreator<number>(),
 
   // An action that returns meta, payload, and even overrides the action type.
   // Note that when you override the action type, the `.actionType` property

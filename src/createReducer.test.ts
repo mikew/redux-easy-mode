@@ -27,5 +27,12 @@ describe('createReducer', () => {
         },
       }),
     )
+
+    state = testReducer(state, testActions.identityPayload('hello world'))
+    expect(state).toEqual(
+      expect.objectContaining({
+        identityPayload: 'hello world',
+      }),
+    )
   })
 })

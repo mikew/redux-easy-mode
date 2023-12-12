@@ -1,8 +1,10 @@
 import createActions from '../createActions'
+import identityPayloadCreator from '../identityPayloadCreator'
 
 const testActions = createActions('test', {
   noPayload: () => undefined,
   simplePayload: () => 'simple',
+  identityPayload: identityPayloadCreator<string>(),
   complexPayload: (arg1: number, arg2: string) => ({ arg1, arg2 }),
   specialProperties: (arg1: number, arg2: string) => ({
     payload: { arg1, arg2 },
